@@ -1,0 +1,31 @@
+/* Example styles for Signup and Signin */
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    margin: 280px auto;
+   
+  }
+  
+  input {
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+   
+   
+   
+  }
+  
+  button {
+    padding: 5px;
+    background-color: #750a53;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #5c073e;
+  }

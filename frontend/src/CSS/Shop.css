@@ -1,0 +1,127 @@
+
+
+.box-container {
+  
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.box-container .box {
+  text-align: center;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.7);
+  border: 0.1rem solid rgba(0, 0, 0, 0.7);
+}
+
+.box-container .box img {
+  height: 20rem;
+  width: 15rem;
+}
+
+.box-container .box h3 {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #222;
+}
+
+.box-container .box:hover h3 {
+  color: #57063f;
+}
+
+.box-container {
+  display: -ms-grid;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  gap: 1.5rem;
+}
+
+.box-container .box {
+  position: relative;
+  background: #f3f3f3;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.7);
+  border: 0.1rem solid rgba(0, 0, 0, 0.7);
+}
+
+.box-container .box:hover .icons {
+  top: 0;
+}
+
+.box-container .box .icons {
+  position: absolute;
+  top: -105%;
+  left: 0;
+  height: 30rem;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(247, 230, 240, 0.8);
+  gap: 1rem;
+}
+
+.box-container .box .icons a {
+  font-size: 2rem;
+  height: 5rem;
+  width: 5rem;
+  line-height: 5rem;
+  background: #150202;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  color: #111010;
+}
+
+.box-container .box .icons a:hover {
+  background: var(--color);
+  color: #fff;
+}
+
+.box-container .box .img {
+  height: 15rem;
+  width: 27rem;
+
+  overflow: hidden;
+}
+
+.box-container .box .img img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.box-container .box .content {
+  padding: 1.5rem;
+}
+
+.box-container .box .content h3 {
+  font-size: 2rem;
+  color: #222;
+}
+
+.box-container .box .content .price {
+  font-size: 2rem;
+  color: #222;
+  padding: 1rem 0;
+}
+
+.box-container .box .content i {
+  font-size: 1.7rem;
+  color: var(--color);
+}
+
+
+.box-container .box .icons button {
+  background: rgba(28, 7, 7, 0.7); /* Semi-transparent background */
+  border: none; /* No border */
+  border-radius: 50%; /* Circular buttons */
+  padding: 10px; /* Padding for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+
+.box-container .box .icons button:hover {
+  background: rgb(23, 22, 22); /* Full background on hover */
+}
