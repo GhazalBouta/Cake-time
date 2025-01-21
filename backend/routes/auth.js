@@ -3,11 +3,21 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { body, validationResult } = require('express-validator'); // For input validation
 
 const router = express.Router();
 
 // Sign Up Route
-router.post('/signup', async (req, res) => {
+router.post('/signup', [
+  body('username').isLength({ min: 3 }).withMessage('Username must be at least 3 characters long.'),
+  body('email').isEmail().withMessage('Please enter a valid email.'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { username, email, password } = req.body;
 
   try {
@@ -18,8 +28,8 @@ router.post('/signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
-    await newUser.save();
+    const newUser  = new User({ username, email, password: hashedPassword });
+    await newUser .save();
     res.status(201).json({ message: 'User  created successfully' });
   } catch (error) {
     console.error('Error creating user:', error);

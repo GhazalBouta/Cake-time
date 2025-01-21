@@ -7,9 +7,11 @@ const SignUp = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); // Set loading to true
 
     try {
       const response = await axios.post('http://localhost:4000/api/auth/signup', {
@@ -20,13 +22,15 @@ const SignUp = ({ onClose }) => {
 
       if (response.status === 201) {
         setResponseMessage('User  created successfully!');
-        onClose();
+        onClose(); // Close the modal or redirect
       } else {
         setResponseMessage('Error creating user');
       }
     } catch (error) {
       console.error('Error signing up:', error);
-      setResponseMessage('Error signing up');
+      setResponseMessage(error.response?.data?.message || 'Error signing up');
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -57,7 +61,9 @@ const SignUp = ({ onClose }) => {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing Up...' : 'Sign Up'}
+        </button>
       </form>
       <p id="response-message">{responseMessage}</p>
     </div>
