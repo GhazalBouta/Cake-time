@@ -1,15 +1,20 @@
 // src/components/ShoppingCart.js
 import React, { useState } from 'react';
+import Cart from './Cart';
+import Wishlist from './Wishlist';
 
 const ShoppingCart = () => {
     const [cart, setCart] = useState([]);
     const [favorites, setFavorites] = useState([]);
 
     const addToCart = (cake) => {
-        setCart([...cart, cake]);
-        alert(`${cake.name} has been added to your cart!`);
+        if (!cart.some(item => item.name === cake.name)) {
+            setCart([...cart, cake]);
+            alert(`${cake.name} has been added to your cart!`);
+        } else {
+            alert(`${cake.name} is already in your cart!`);
+        }
     };
-
     const addToFavorites = (cakeName) => {
         if (!favorites.includes(cakeName)) {
             setFavorites([...favorites, cakeName]);
@@ -37,6 +42,8 @@ const ShoppingCart = () => {
     return (
         <div className="box-container" onClick={handleBoxClick}>
             {/* Render cake boxes here */}
+            <Cart cartItems={cart} />
+            <Wishlist wishlistItems={favorites} />
         </div>
     );
 };

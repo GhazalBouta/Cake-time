@@ -1,56 +1,7 @@
-
-
 html {
   font-size: 52.5%;
   overflow-x: hidden;
   scroll-behavior: smooth;
-}
-
-section {
-  padding: 3rem 3%;
-}
-
-.heading {
-
-  background-size: cover;
-  background-position: center;
-  text-align: center;
-  padding-top: 8rem;
-  padding-bottom: 8rem;
-  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.7);
-}
-
-.heading h1 {
-  color: #520421;
-  font-size: 6rem;
-  font-weight: bolder;
-  font-style: italic;
-
-}
-
-.title {
-  display: flex;
-  align-items: center;
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-  padding: 1.2rem 0;
-  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.7);
-  color: #fff;
-}
-
-.title span {
-  color: #222;
-  padding-left: .7rem;
-}
-
-.title a {
-  margin-left: auto;
-  color: #222;
-  font-size: 1.5rem;
-}
-
-.title a:hover {
-  color: #fff;
 }
 
 .header {
@@ -62,8 +13,9 @@ section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5rem 15%;
-  box-shadow: 0 0.5rem 1rem  rgba(217, 97, 207, 0.877);
+  padding: 10px 20px;
+  background-color: rgba(233, 192, 223, 0.637);
+  box-shadow: 0 0.5rem 1rem rgba(217, 97, 207, 0.877);
 }
 
 .header .logo {
@@ -73,9 +25,9 @@ section {
   color: rgba(85, 4, 78, 0.877);
 }
 
-.header .logo i {
-  color: #222;
-  padding-right: .5rem;
+.header .navbar {
+  display: flex;
+  gap: 10px;
 }
 
 .header .navbar a {
@@ -88,105 +40,43 @@ section {
   color: #222;
 }
 
-.header .icons div {
-  font-size: 3rem;
-  margin-left: 3.7rem;
+.header .icons {
+  display: flex;
+  gap: 10px;
+  font-size: 24px;
+  color: #333;
   cursor: pointer;
-  color: #222;
 }
 
-.header .icons div:hover {
-  color: #222;
-}
-
-#menu-btn {
+.header .hamburger {
   display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
 }
 
-
-
-
-
-
-
-
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: rgba(233, 192, 223, 0.637);
-  }
-  
-  .navbar a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-  }
-  
-  .icons {
-    display: flex;
-    gap: 10px;
-  }
-
-
-
- /* Hamburger icon styles */
-.hamburger {
-  display: flex; /* Use flexbox for alignment */
-  flex-direction: column; /* Stack lines vertically */
-  cursor: pointer; /* Pointer cursor on hover */
-  margin-right: 20px; /* Space from the next icon */
-}
-
-.line {
-  width: 20px; /* Width of the lines */
-  height: 3px; /* Height of the lines */
-  background-color: #333; /* Color of the lines */
-  margin: 4px 0; /* Space between lines */
-  transition: all 0.3s ease; /* Smooth transition for hover effect */
-}
-
-/* Optional: Add hover effect */
-.hamburger:hover .line {
-  background-color: #5e083d; /* Change color on hover */
+.header .hamburger .line {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar {
-    display: none; /* Hide by default on smaller screens */
+    display: none;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .navbar.active {
-    display: flex; /* Show when active */
+    display: flex;
   }
 
-  #menu-btn {
-    display: flex; /* Show hamburger icon */
-  }
-}
-
-/* Styles for larger screens */
-@media (min-width: 768px) {
-  .navbar {
-    display: flex; /* Show on larger screens */
-    flex-direction: row; /* Stack horizontally */
-    position: static; /* Reset position */
-    box-shadow: none; /* Remove shadow */
-    background-color: transparent; /* Transparent background */
+  .hamburger {
+    display: flex;
   }
 }
-
-
-
-
-
-
-
-
-
 
 .modal-overlay {
   position: fixed;
@@ -194,67 +84,67 @@ section {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for better contrast */
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Ensure it appears above other content */
+  z-index: 1000;
 }
 
 .modal-content {
-  position: relative; /* Ensure the modal content is positioned relative */
+  position: relative;
   background-color: white;
-  padding: 30px; /* Increased padding for better spacing */
-  border-radius: 10px; /* More rounded corners */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Deeper shadow for depth */
-  max-width: 400px; /* Limit width for better appearance */
-  width: 90%; /* Responsive width */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
 }
 
 .modal-content h2 {
-  margin-bottom: 20px; /* Space below the title */
-  color: #5e083d; /* Darker title color */
-  text-align: center; /* Center the title */
+  margin-bottom: 20px;
+  color: #5e083d;
+  text-align: center;
 }
 
-.modal-content input, 
+.modal-content input,
 .modal-content textarea {
-  width: 100%; /* Full width inputs */
-  padding: 10px; /* Padding inside inputs */
-  margin: 10px 0; /* Space between inputs */
-  border: 1px solid #ddd; /* Light border */
-  border-radius: 5px; /* Rounded corners for inputs */
-  font-size: 16px; /* Increased font size */
-
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
 }
+
 .modal-content button {
-  background-color: #5e083d; /* Button color */
-  color: white; /* Text color */
-  border: none; /* Remove border */
-  padding: 10px 15px; /* Padding for button */
-  border-radius: 5px; /* Rounded corners for button */
-  cursor: pointer; /* Pointer cursor */
-  transition: background-color 0.3s ease; /* Smooth hover effect */
-  width: calc(100% - 10px); /* Full width button minus margin */
-  margin: 5px 0; /* Vertical margin to create space between buttons */
+  background-color: #5e083d;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: calc(100% - 10px);
+  margin: 5px 0;
 }
 
 .modal-content button:hover {
-  background-color: #7a0a4f; /* Darker shade on hover */
+  background-color: #7a0a4f;
 }
 
 .close-btn {
-  background: none; /* No background */
-  border: none; /* No border */
-  color: #5e083d; /* Color of the close button */
-  font-size: 24px; /* Size of the close button */
-  position:sticky;
-  top: 10px; /* Distance from the top */
-  right: 15px; /* Distance from the right */
-  cursor: pointer; /* Pointer cursor */
-  transition: color 0.3s ease; /* Smooth color transition */
+  background: none;
+  border: none;
+  color: #5e083d;
+  font-size: 24px;
+  position: sticky;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .close-btn:hover {
-  color: #f8edf4; /* Darker shade on hover */
+  color: #f8edf4;
 }

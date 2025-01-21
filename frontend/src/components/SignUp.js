@@ -1,53 +1,67 @@
+// src/components/SignUp.js
 import React, { useState } from 'react';
-import '../CSS/Signin-up.css';
+import axios from 'axios';
 
+const SignUp = ({ onClose }) => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
 
-const Signup = () => {
-    const [responseMessage, setResponseMessage] = useState('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const username = event.target.username.value;
-        const email = event.target.email.value;
-        const password = event.target.password.value;
+    try {
+      const response = await axios.post('http://localhost:4000/api/auth/signup', {
+        username,
+        email,
+        password,
+      });
 
-        try {
-            const response = await fetch('http://localhost:5000/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, email, password }),
-            });
+      if (response.status === 201) {
+        setResponseMessage('User  created successfully!');
+        onClose();
+      } else {
+        setResponseMessage('Error creating user');
+      }
+    } catch (error) {
+      console.error('Error signing up:', error);
+      setResponseMessage('Error signing up');
+    }
+  };
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-
-            const data = await response.json();
-            setResponseMessage(`User  created successfully! User ID: ${data.userId}`);
-
-            // Optionally redirect or clear form fields here
-        } catch (error) {
-            console.error('Error signing up:', error);
-            setResponseMessage(`Error signing up: ${error.message}`);
-        }
-    };
-
-    return (
-        <div>
-            <form id="signup-form" onSubmit={handleSubmit}>
-                <input type="text" name="username" placeholder="Username" required />
-                <input type="email" name="email" placeholder="Email" required />
-                <input type="password" name="password" placeholder="Password" required />
-                <button type="submit">Sign Up</button>
-            </form>
-            <p id="response-message">{responseMessage}</p>
-        </div>
-    );
+  return (
+    <div>
+      <form id="signup-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          required
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="response-message">{responseMessage}</p>
+    </div>
+  );
 };
 
-
-
-
-export default Signup;
+export default SignUp;

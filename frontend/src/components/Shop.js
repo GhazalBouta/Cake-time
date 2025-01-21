@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../CSS/Shop.css'; // Create this CSS file for styles
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faShoppingCart } from '@fortawesome/free-solid-svg-icons'; // Import the icons you want to use
+import { faHeart, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
-
-
-const Products= [
+const Products = [
   {
     id: 1,
     imgSrc: "../images/IMG_2657.jpg",
@@ -160,11 +158,13 @@ const Products= [
 
 const Shop = () => {
   const [shopProducts, setShopProducts] = useState(Products); // Use hardcoded products as fallback
+  const [cart, setCart] = useState([]); // State for cart
+  const [wishlist, setWishlist] = useState([]); // State for wishlist
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('http://localhost:4000/api/products');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -179,39 +179,51 @@ const Shop = () => {
 
     fetchProducts();
   }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [cart, wishlist]);
 
+  const addToCart = (product) => {
+    if (!cart.some(item => item.id === product.id)) {
+        setCart([...cart, product]);
+        alert(`${product.title} has been added to your cart!`);
+    } else {
+        alert(`${product.title} is already in your cart!`);
+    }
+  };
+
+  const addToWishlist = (product) => {
+    if (!wishlist.some(item => item.id === product.id)) {
+        setWishlist([...wishlist, product]);
+        alert(`${product.title} has been added to your wishlist!`);
+    } else {
+        alert(`${product.title} is already in your wishlist!`);
+    }
+  };
+
+ 
   return (
-    <section className="shop">
-      <div className="heading">
-        <h1>Store</h1>
-      </div>
-      <div className="box-container">
-        {shopProducts.length > 0 ? (
-          shopProducts.map((product) => (
-            <div className="box" key={product.id}>
-              <div className="img">
-                <img src={product.imgSrc} alt={product.title} />
-                <div className="icons">
-                  <button onClick={() => {/* Add to Wishlist Logic */}}>
-                    <FontAwesomeIcon icon={faHeart} />
-                  </button>
-                  <button onClick={() => {/* Add to Basket Logic */}}>
-                    <FontAwesomeIcon icon={faShoppingCart} />
-                  </button>
-                </div>
-              </div>
-              <div className="content">
-                <h3>{product.title}</h3>
-                <div className="price">{product.price}</div>
-              </div>
+    <div className="box-container">
+      {shopProducts.map((product) => (
+        <div className="box" key={product.id}>
+          <div className="img">
+            <img src={product.imgSrc} alt={product.title} />
+            <div className="icons">
+              <FontAwesomeIcon icon={faHeart} onClick={() => addToWishlist(product)} />
+              <FontAwesomeIcon icon={faShoppingCart} onClick={() => addToCart(product)} />
             </div>
-          ))
-        ) : (
-          <p>Loading products...</p>
-        )}
-      </div>
-    </section>
+          </div>
+          <div className="content">
+            <h3>{product.title}</h3>
+            <div className="price">{product.price}</div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
+
 
 export default Shop;

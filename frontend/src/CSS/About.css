@@ -27,8 +27,8 @@ body {
     flex-wrap: wrap;
     gap: 1.5rem;
     background-color: #f7a9df1c;
-    padding-top: 15rem;
-    padding-bottom: 10rem; /* Added bottom padding for better spacing */
+    padding-top: 1rem;
+    padding-bottom: 5rem; /* Added bottom padding for better spacing */
   
 }
 
@@ -37,6 +37,7 @@ body {
     padding-left: 5rem;
     margin-left: 3rem;
     padding:15rem;
+   
 }
 
 .about .img img {
@@ -63,7 +64,8 @@ body {
     font-size: 2rem;
     line-height: 1.5; /* Corrected line-height */
     padding: 2rem;
-    margin: 2rem;
+    margin: 1rem;
+    margin-right: 185px;
 }
 
 .home {
