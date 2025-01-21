@@ -19,7 +19,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 }).catch(err => {
     console.error('MongoDB connection error:', err);
 });
-
 // Define API routes
 const productRoutes = require('./routes/products'); // Ensure this is correct
 app.use('/api/products', productRoutes); // Ensure this matches your fetch request
