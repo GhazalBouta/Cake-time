@@ -1,36 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// src/components/Cart.js
+import React, { useContext } from 'react';
+import { CartContext } from '../Context/CartContext'; // Adjust the path if necessary
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([]);
-
-    useEffect(() => {
-        const fetchCartItems = async () => {
-            const response = await axios.get('http://localhost:4000/api/cart');
-            setCartItems(response.data);
-        };
-        fetchCartItems();
-    }, []);
-
-    const handleRemoveItem = async (itemId) => {
-        await axios.delete(`http://localhost:4000/api/cart/remove/${itemId}`);
-        setCartItems(cartItems.filter(item => item._id !== itemId));
-    };
+    const { cartItems, removeFromCart, clearCart, getCartTotal } = useContext(CartContext);
 
     return (
         <div>
-            <h2>Your Cart</h2>
+            <h2>Your Cart Items</h2>
             {cartItems.length === 0 ? (
                 <p>Your cart is empty.</p>
             ) : (
                 <ul>
-                    {cartItems.map(item => (
-                        <li key={item._id}>
-                            Product ID: {item.productId} - Quantity: {item.quantity}
-                            <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
+                    {cartItems.map((item, index) => (
+                        <li key={item.name || index}>
+                            <h3>{item.name}</h3>
+                            <p>Price: ${item.price}</p>
+                            <button onClick={() => removeFromCart(item)}>Remove</button>
                         </li>
                     ))}
                 </ul>
+            )}
+            {cartItems.length > 0 && (
+                <div>
+                    <h3>Total: ${getCartTotal()}</h3>
+                    <button onClick={clearCart}>Clear Cart</button>
+                </div>
             )}
         </div>
     );

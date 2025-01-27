@@ -1,34 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// src/components/Wishlist.js
+import React, { useContext } from 'react';
+import { ShopContext } from '../Context/ShopContext'; // Ensure this path is correct
+import WishlistItems from './WishlistItems'; // Ensure the case matches the file name
+import '../CSS/Wishlist.css'; // Ensure this path is correct
 
 const Wishlist = () => {
-    const [wishlistItems, setWishlistItems] = useState([]);
+    const { wishlistItems } = useContext(ShopContext); // Get wishlist items from context
 
-    useEffect(() => {
-        const fetchWishlistItems = async () => {
-            const response = await axios.get('http://localhost:4000/api/wishlist');
-            setWishlistItems(response.data);
-        };
-        fetchWishlistItems();
-    }, []);
-
-    const handleRemoveItem = async (itemId) => {
-        await axios.delete(`http://localhost:4000/api/wishlist/remove/${itemId}`);
-        setWishlistItems(wishlistItems.filter(item => item._id !== itemId));
-    };
+    // Convert wishlistItems object to an array if necessary
+    const wishlistArray = Object.keys(wishlistItems).map((key) => ({
+        id: key,
+        ...wishlistItems[key],
+    }));
 
     return (
-        <div>
+        <div className="wishlist-container">
             <h2>Your Wishlist</h2>
-            {wishlistItems.length === 0 ? (
+            {wishlistArray.length === 0 ? (
                 <p>Your wishlist is empty.</p>
             ) : (
                 <ul>
-                    {wishlistItems.map(item => (
-                        <li key={item._id}>
-                            Product ID: {item.productId}
-                            <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
-                        </li>
+                    {wishlistArray.map((item) => (
+                        <WishlistItems key={item.id} item={item} /> // Render WishlistItems component
                     ))}
                 </ul>
             )}

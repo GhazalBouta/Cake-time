@@ -1,9 +1,12 @@
+// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Note the change here
-import App from './App'; // Adjust the path if necessary
+import ReactDOM from 'react-dom';
+import App from './App';
+import './styles.css'; // Import your styles
 
-
-
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+ReactDOM.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+    document.getElementById('root')
+);
