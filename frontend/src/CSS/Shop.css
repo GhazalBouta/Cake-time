@@ -4,6 +4,7 @@
   grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
   gap: 1.5rem;
   padding: 10rem 6rem;
+  margin: 30px;
 }
 
 .box-container .box {
@@ -115,7 +116,3 @@
 .box-container .box .icons button:hover {
   background: rgb(23, 22, 22); /* Full background on hover */
 }
-
-
-
-

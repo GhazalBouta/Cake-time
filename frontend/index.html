@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <h1>Your Shopping Cart</h1>
+    <ul id="cart-items"></ul>
+
+    <script>
+        fetch('http://localhost:4000/cart')
+            .then(response => response.json())
+            .then(data => {
+                const cartItemsList = document.getElementById('cart-items');
+                if (data.status) {
+                    data.data.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${item.title} - $${item.price} (Quantity: ${item.quantity})`;
+                        cartItemsList.appendChild(listItem);
+                    });
+                } else {
+                    console.error('Error fetching cart items:', data.error);
+                }
+            })
+            .catch(error => console.error('Fetch error:', error));
+    </script>
+</body>
+</html>

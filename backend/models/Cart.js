@@ -1,28 +1,38 @@
-const express = require('express');
-const Cart = require('./Cart');
-const auth = require('../middleware/auth'); // Middleware for authentication
+// src/models/Cart.js
+const mongoose = require("mongoose");
 
-const router = express.Router();
+// Define the schema for items in the cart
+const ItemSchema = new mongoose.Schema({
+    productId: { type: String, required: true }, // Product ID
+    title: { type: String, required: true }, // Product title
+    price: { type: Number, required: true }, // Product price
+    quantity: { type: Number, required: true, min: 1 }, // Quantity of the product
+});
+
+// Define the schema for the cart
+const CartSchema = new mongoose.Schema({
+    userId: { type: String, required: true }, // User ID to associate the cart with a user
+    items: [ItemSchema], // Array of items in the cart
+    subTotal: { type: Number, default: 0 }, // Total price of items in the cart
+}, { timestamps: true }); // Automatically manage createdAt and updatedAt fields
+
+// Export the Cart model
+module.exports = mongoose.model("Cart", CartSchema);
+
+
+// Get cart by user ID
+router.get('/:userId', CartController.getCart);
 
 // Add item to cart
-router.post('/add', auth, async (req, res) => {
-    const { productId, quantity } = req.body;
-    const userId = req.user.userId; // Get user ID from token
+router.post('/:userId/items', CartController.addItemToCart);
 
-    try {
-        const existingItem = await Cart.findOne({ userId, productId });
-        if (existingItem) {
-            existingItem.quantity += quantity; // Update quantity if item exists
-            await existingItem.save();
-        } else {
-            const newItem = new Cart({ userId, productId, quantity });
-            await newItem.save();
-        }
-        res.status(201).json({ message: 'Item added to cart' });
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-        res.status(500).json({ message: 'Error adding to cart' });
-    }
-});
+// Update item in cart
+router.put('/:userId/items/:itemId', CartController.updateCartItem);
+
+// Remove item from cart
+router.delete('/:userId/items/:itemId', CartController.removeCartItem);
+
+// Clear cart
+router.delete('/:userId', CartController.clearCart);
 
 module.exports = router;

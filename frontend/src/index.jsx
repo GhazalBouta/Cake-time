@@ -2,11 +2,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import './styles.css'; // Import your styles
+import ShopContextProvider from './Context/ShopContext';
 
 ReactDOM.render(
-    <React.StrictMode>
+    <ShopContextProvider>
         <App />
-    </React.StrictMode>,
+    </ShopContextProvider>,
     document.getElementById('root')
 );
