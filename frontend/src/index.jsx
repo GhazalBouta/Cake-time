@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import ShopContextProvider from './Context/ShopContext';
+import { ShopContextProvider } from './Context/ShopContext';
 
 ReactDOM.render(
     <ShopContextProvider>

@@ -1,31 +1,36 @@
-import { useContext } from 'react';
-import { CartContext } from '../Context/CartContext';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart, emptyCart } from "../store/cart/cartActions";
 
 const Cart = () => {
-    const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
-    
-    const getCartTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const dispatch = useDispatch();
+    const addedItems = useSelector((state) => state.cartStore.addedItems);
+    const total = useSelector((state) => state.cartStore.total);
+
+    const cartItemRemoveHandler = (id) => {
+        dispatch(removeFromCart(id));
+    };
+
+    const handleCheckout = () => {
+        // Handle checkout logic
     };
 
     return (
         <div>
-            <h2>Cart</h2>
-            {cartItems.length > 0 ? (
-                <>
-                    {cartItems.map(item => (
-                        <div key={item.id}>
-                            <h3>{item.title}</h3>
-                            <p>Price: ${item.price}</p>
-                            <p>Quantity: {item.quantity}</p>
-                            <button onClick={() => removeFromCart(item)}>Remove</button>
+            <h1>Your Cart</h1>
+            {addedItems.length === 0 ? (
+                <p>Your cart is empty</p>
+            ) : (
+                <div>
+                    {addedItems.map((item) => (
+                        <div key={item._id}>
+                            <h2>{item.title}</h2>
+                            <button onClick={() => cartItemRemoveHandler(item._id)}>Remove</button>
                         </div>
                     ))}
-                    <h3>Total: ${getCartTotal()}</h3>
-                    <button onClick={clearCart}>Clear Cart</button>
-                </>
-            ) : (
-                <p>Your cart is empty</p>
+                    <h2>Total: ${total}</h2>
+                    <button onClick={handleCheckout}>Checkout</button>
+                </div>
             )}
         </div>
     );

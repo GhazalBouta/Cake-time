@@ -1,17 +1,18 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ShopContextProvider from './Context/ShopContext';
+import {ShopContextProvider} from './Context/ShopContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import About from './components/About';
 import Shop from './components/Shop';
-import ShoppingCart from './components/ShoppingCart'; // Import ShoppingCart component
+import CartItems from './components/CartItems';
 import Signup from './components/SignUp';
 import Signin from './components/SignIn';
 import Feedback from './components/Feedback';
 import Contact from './components/Contact';
 import Wishlist from './components/Wishlist';
+import Order from './components/Order';
 import ProductList from './components/ProductList';
 const App = () => {
     return (
@@ -27,7 +28,8 @@ const App = () => {
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/wishlist" element={<Wishlist />} />
-                    <Route path="/cart" element={<ShoppingCart />} />
+                    <Route path="/cart" element={<CartItems />} />
+                    <Route path="/order" element={<Order />} />
                     <Route path="/product-list" element={<ProductList />} />
                 </Routes>
                 <Footer />

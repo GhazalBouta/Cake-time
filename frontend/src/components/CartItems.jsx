@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect } from "react";
-import "./CartItems.css";
-import { ShopContext } from "../../Context/ShopContext.jsx";
+import "../CSS/CartItems.css";
+import { ShopContext } from "../Context/ShopContext.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
-import Order from "../Order/Order.jsx";
-import axiosInstance from "../../Context/axiosInstanse.jsx";
+import Order from "./Order.jsx";
+import axiosInstance from "../Context/axiosInstance.jsx";
 
 const CartItems = () => {
   const { getTotalCartAmount, cartItems, removeFromCart, addToCart, updateCartItemCount } = useContext(ShopContext);
