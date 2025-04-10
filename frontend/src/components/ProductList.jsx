@@ -1,8 +1,6 @@
 // src/components/ProductList.jsx
-import React, { useEffect, useState, useContext } from 'react';
-import { CartContext } from '../Context/CartContext';
-
-
+import React from 'react';
+import Product from './Product';
 
 /*
 
@@ -161,31 +159,19 @@ const products = [
 
 */
 
-const ProductList = () => {
-    const [products, setProducts] = useState([]);
-    const { addToCart } = useContext(CartContext);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const response = await fetch('https://dummyjson.com/products');
-            const data = await response.json();
-            setProducts(data.products);
-        };
-        fetchProducts();
-    }, []);
 
-    return (
-        <div>
-            <h1>Product List</h1>
-            {products.map(product => (
-                <div key={product.id}>
-                    <h2>{product.title}</h2>
-                    <p>Price: ${product.price}</p>
-                    <button onClick={() => addToCart(product)}>Add to Cart</button>
-                </div>
-            ))}
-        </div>
-    );
+
+// src/components/ProductList.jsx
+
+const ProductList = ({ products, addToCart }) => {
+  return (
+    <div className="product-list">
+      {products.map((product) => (
+        <Product key={product.id} item={product} addToCart={addToCart} />
+      ))}
+    </div>
+  );
 };
 
 export default ProductList;

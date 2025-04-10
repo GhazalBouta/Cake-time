@@ -1,4 +1,3 @@
-// src/components/SignIn.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -18,6 +17,7 @@ const SignIn = ({ onClose }) => {
 
       if (response.status === 200) {
         setResponseMessage('Sign in successful!');
+        localStorage.setItem('token', response.data.token);
         onClose();
       } else {
         setResponseMessage('Invalid credentials');
