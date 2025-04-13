@@ -1,0 +1,112 @@
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: rgba(241, 211, 171, 0.281);
+  }
+  
+  .auth-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .auth-form h2 {
+    text-align: center;
+    color: rgba(63, 4, 57, 0.9);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: rgba(63, 4, 57, 0.8);
+    font-size: 0.9rem;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(63, 4, 57, 0.2);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: rgba(63, 4, 57, 0.8);
+    box-shadow: 0 0 0 2px rgba(63, 4, 57, 0.1);
+  }
+  
+  .auth-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: rgba(63, 4, 57, 0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .auth-button:hover:not(:disabled) {
+    background-color: rgba(63, 4, 57, 1);
+  }
+  
+  .auth-button:disabled {
+    background-color: rgba(63, 4, 57, 0.5);
+    cursor: not-allowed;
+  }
+  
+  .auth-button.loading {
+    opacity: 0.8;
+    cursor: wait;
+  }
+  
+  .error-message {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .success-message {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    color: #28a745;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .auth-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: rgba(63, 4, 57, 0.7);
+  }
+  
+  .auth-link a {
+    color: rgba(63, 4, 57, 0.9);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .auth-link a:hover {
+    text-decoration: underline;
+  }

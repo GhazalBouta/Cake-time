@@ -1,0 +1,14 @@
+/* src/components/Product.css */
+.product {
+  display: inline-block;
+  margin: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}

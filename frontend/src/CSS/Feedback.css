@@ -1,21 +1,19 @@
-
-
 .feedback-section {
   box-shadow: rgba(59, 49, 49, 0.2) 20px 20px 20px 20px;
-  margin: 10rem 10rem;
-  padding: 15rem 10rem;
+  margin: 5rem 15rem;
+  padding: 7rem 13rem;
   background-color: rgba(241, 211, 171, 0.281);
-  
-
 }
 
-.feedback-section h2{
+.feedback-section h2 {
   font-size: 2.4rem;
   text-align: center;
   font-weight: bolder;
   font-style: italic;
-} 
-.feedback-section p{
+  margin-bottom: 2rem;
+}
+
+.feedback-section p {
   font-size: 2.7rem;
 }
 
@@ -35,11 +33,13 @@
 .rating .child {
   cursor: pointer;
   transition: transform 0.3s;
+  padding: 1rem;
+  border-radius: 1rem;
 }
 
-.rating .child.active {
-  transform: scale(1.2);
-  color: #5e083d; /* Change color to indicate selection */
+.rating .child.selected {
+  transform: scale(1.1);
+  background-color: rgba(94, 8, 61, 0.1);
 }
 
 .child p:first-child {
@@ -51,30 +51,94 @@
   margin-bottom: 1.2rem;
   transition: all 0.6s linear;
 }
+
 .child p:first-child:hover {
-  transform: scale(1.15); /* Use transform instead of scale */
+  transform: scale(1.15);
   box-shadow: rgba(22, 22, 22, 0.2) 7px 5px 8px 8px;
+}
+
+.form-group {
+  margin: 2rem 0;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 1.2rem;
+  border: 2px solid rgba(63, 4, 57, 0.2);
+  border-radius: 0.5rem;
+  font-size: 1.6rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: rgba(63, 4, 57, 0.8);
+  box-shadow: 0 0 0 3px rgba(63, 4, 57, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
 }
 
 .feedback-btn {
   width: 100%;
   text-align: center;
-
+  margin-top: 3rem;
 }
 
-.feedback-btn button{
-
-padding: 1.2rem 3.2rem;
-border: none;
-outline: none;
-cursor: pointer;
-background-color: rgba(63, 4, 57, 0.434);
-color: #240707;
-font-size: 2rem;
-border-radius: 0.5rem;
-display: inline-block;
+.feedback-btn button {
+  padding: 1.2rem 3.2rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: rgba(63, 4, 57, 0.8);
+  color: white;
+  font-size: 2rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+  transition: all 0.3s ease;
 }
 
+.feedback-btn button:hover:not(:disabled) {
+  background-color: rgba(63, 4, 57, 1);
+  transform: translateY(-2px);
+}
 
+.feedback-btn button:disabled {
+  background-color: rgba(63, 4, 57, 0.3);
+  cursor: not-allowed;
+}
 
+.error-message,
+.success-message {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+}
 
+.error-message {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 2px solid rgba(220, 53, 69, 0.2);
+}
+
+.error-message p {
+  color: #dc3545;
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.success-message {
+  background-color: rgba(63, 4, 57, 0.1);
+  border: 2px solid rgba(63, 4, 57, 0.2);
+}
+
+.success-message p {
+  color: rgba(63, 4, 57, 0.9);
+  font-size: 2rem;
+  margin: 0;
+}

@@ -1,0 +1,147 @@
+.wishlist-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 5rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.wishlist-container h1 {
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  width: 100%;
+}
+
+.wishlist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.wishlist-item {
+  display: flex;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.item-image {
+  width: 200px;
+  min-width: 200px;
+  height: 200px;
+  margin-right: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-details {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.item-details h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 2.4rem;
+  text-transform: capitalize;
+}
+
+.item-price {
+  color: #666;
+  font-weight: bold;
+  font-size: 2.2rem;
+  margin: 10px 0;
+}
+
+.item-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.add-to-cart-btn {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1.7rem;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #45a049;
+}
+
+.remove-button {
+  padding: 8px 16px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 1.7rem;
+}
+
+.remove-button:hover {
+  background-color: #ff0000;
+}
+
+.empty-wishlist {
+  text-align: center;
+  padding: 50px;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px;
+  width: 100%;
+  margin-top: 5rem;
+}
+
+.empty-wishlist h2 {
+  font-size: 2.8rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.empty-wishlist p {
+  font-size: 1.5rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .wishlist-item {
+    flex-direction: column;
+  }
+
+  .item-image {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .item-details {
+    padding: 0;
+  }
+
+  .item-actions {
+    flex-direction: column;
+  }
+}

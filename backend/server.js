@@ -1,11 +1,9 @@
 // server.js
 const express = require('express');
 const mongoose = require('mongoose');
-const connectDB = require('./config/mongoose'); // Import the connectDB function
+const connectDB = require('./config/mongoose');
 require('dotenv').config();
 const cors = require('cors');
-
-
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -15,75 +13,70 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-connectDB(); // Call the connectDB function to connect to MongoDB
+connectDB();
+
+// Import routes
+const feedbackRoutes = require('./routes/feedback');
+const authRoutes = require('./routes/auth');
+
+// Routes
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/auth', authRoutes);
 
 // Cart Schema
 const cartSchema = new mongoose.Schema({
     items: [
         {
-            id: { type: String, required: true }, // Ensure id is required
+            id: { type: String, required: true },
             title: { type: String, required: true },
             price: { type: Number, required: true },
             quantity: { type: Number, default: 1 },
-        },
-    ],
+        }
+    ]
 });
 
 const Cart = mongoose.model('Cart', cartSchema);
 
-// API Endpoints
-
-// Get cart items
-app.get('/api/cart', async (req, res) => {
-    const cart = await Cart.findOne();
-    res.json(cart || { items: [] });
-});
-
-// Add item to cart
+// Cart routes
 app.post('/api/cart', async (req, res) => {
-    const { id, title, price } = req.body; // Get item details from request body
-    const cart = await Cart.findOne();
+    const { id, title, price } = req.body;
+    let cart = await Cart.findOne();
 
-    if (cart) {
+    if (!cart) {
+        cart = new Cart({
+            items: [{ id, title, price, quantity: 1 }]
+        });
+    } else {
         const existingItem = cart.items.find(item => item.id === id);
         if (existingItem) {
-            existingItem.quantity += 1; // Increment quantity if item exists
+            existingItem.quantity += 1;
         } else {
-            cart.items.push({ id, title, price }); // Add new item
+            cart.items.push({ id, title, price, quantity: 1 });
         }
-        await cart.save();
-    } else {
-        const newCart = new Cart({ items: [{ id, title, price }] });
-        await newCart.save();
     }
 
-    res.status(201).json(cart); // Send 201 status
+    await cart.save();
+    res.json(cart);
 });
 
-// Remove item from cart
-app.delete('/api/cart/:id', async (req, res) => {
-    const { id } = req.params; // Get item id from request parameters
+app.get('/api/cart', async (req, res) => {
     const cart = await Cart.findOne();
-
     if (cart) {
-        cart.items = cart.items.filter(item => item.id !== id); // Remove item
-        await cart.save();
-        return res.json(cart);
+        res.json(cart);
+    } else {
+        res.status(404).json({ message: "Cart not found" });
     }
-
-    res.status(404).json({ message: "Cart not found" }); // Handle not found
 });
 
-// Update item quantity
 app.put('/api/cart/:id', async (req, res) => {
-    const { id } = req.params; // Get item id from request parameters
-    const { quantity } = req.body; // Get new quantity from request body
+    const { id } = req.params;
+    const { quantity } = req.body;
     const cart = await Cart.findOne();
 
     if (cart) {
         const item = cart.items.find(item => item.id === id);
         if (item) {
-            item.quantity = quantity; // Update quantity
+            item.quantity = quantity;
             await cart.save();
         }
     }

@@ -49,6 +49,7 @@
 
 .box-container .box:hover .icons {
   top: 0;
+  color: #0b0000;
 }
 
 .box-container .box .icons {
@@ -71,13 +72,6 @@
 }
 
 
-
-.box-container .box .icons a:hover {
-  background: var(--color);
-  color: #fff;
-
-  cursor: pointer; /* Pointer cursor on hover */
-}
 
 .box-container .box .img {
   height: 30rem;
@@ -113,6 +107,3 @@
 }
 
 
-.box-container .box .icons button:hover {
-  background: rgb(23, 22, 22); /* Full background on hover */
-}

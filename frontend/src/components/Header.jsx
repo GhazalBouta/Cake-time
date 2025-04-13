@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Modal from './Modal';
+import { CartContext } from '../Context/CartContext';
+import { WishlistContext } from '../Context/WishlistContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faShoppingCart, faUser } from '@fortawesome/free-solid-svg-icons';
 import '../CSS/Header.css';
 
 const Header = () => {
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cart } = useContext(CartContext);
+  const { wishlist } = useContext(WishlistContext);
 
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const wishlistCount = wishlist.length;
 
   const handleCartClick = () => {
-    navigate('/shopping-cart'); // Navigate to the Shopping Cart page
+    navigate('/Cart');
   };
 
   const handleWishlistClick = () => {
-    navigate('/wishlist'); // Navigate to the Wishlist page
-};
-
+    navigate('/wishlist');
+  };
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -41,27 +46,26 @@ const Header = () => {
         <Link to="/about">About</Link>
         <Link to="/shop">Shop</Link>
         <Link to="/feedback">Feedback</Link>
-        <Link to="/contact">Contact</Link>
-         {/* Add other links as needed */}
-        
-         <button onClick={handleCartClick} >
-                    <i className="fa fa-shopping-cart" aria-hidden="true"></i> {/* Shopping cart icon */}
-                </button>
       </nav>
 
-      
       <div className="icons">
-        <FontAwesomeIcon icon={faHeart} onClick={handleWishlistClick} />
-        <FontAwesomeIcon icon={faShoppingCart} onClick={handleCartClick}  />
-        <FontAwesomeIcon icon={faUser} onClick={toggleModal} /> {/* Add click handler */}
+        <div className="wishlist-icon-container">
+          <FontAwesomeIcon icon={faHeart} onClick={handleWishlistClick} />
+          {wishlistCount > 0 && <span className="wishlist-counter">{wishlistCount}</span>}
+        </div>
+        <div className="cart-icon-container">
+          <FontAwesomeIcon icon={faShoppingCart} onClick={handleCartClick} />
+          {cartItemCount > 0 && <span className="cart-counter">{cartItemCount}</span>}
+        </div>
+        <FontAwesomeIcon icon={faUser} onClick={toggleModal} />
       </div>
+
       <div id="menu-btn" className="hamburger" onClick={toggleMenu}>
         <div className="line"></div>
         <div className="line"></div>
         <div className="line"></div>
       </div>
 
-      {/* Modal for Sign In and Sign Up */}
       {showModal && (
         <Modal
           isSignUp={isSignUp}
