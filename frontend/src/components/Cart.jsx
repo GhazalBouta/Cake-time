@@ -1,26 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from '../Context/CartContext';
+import Payment from './Payment';
 import '../CSS/Cart.css';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity } = useContext(CartContext);
+  const { cart, getCartTotal, removeFromCart, updateQuantity } = useContext(CartContext);
+  const [showPayment, setShowPayment] = useState(false);
 
   if (!cart || cart.length === 0) {
     return (
-      <div className="empty-cart">
+      <div className="cart-container empty-cart">
         <h2>Your cart is empty</h2>
         <p>Add some delicious items to your cart!</p>
       </div>
     );
   }
 
-  const calculateTotal = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
   return (
     <div className="cart-container">
-      <h1>Your Shopping Cart</h1>
+      <h1>Your Cart</h1>
       <div className="cart-items">
         {cart.map((item) => (
           <div key={item.id} className="cart-item">
@@ -32,7 +30,7 @@ const Cart = () => {
               <p className="item-price">€{item.price}</p>
               <div className="quantity-controls">
                 <button 
-                  onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                  onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                   className="quantity-btn"
                 >
                   -
@@ -59,12 +57,26 @@ const Cart = () => {
         ))}
       </div>
       <div className="cart-summary">
-        <div className="total">
-          <h2>Total: €{calculateTotal().toFixed(2)}</h2>
+        <h2>Total: €{getCartTotal().toFixed(2)}</h2>
+        <div className="payment-methods">
+          <button className="payment-btn credit-btn" onClick={() => setShowPayment('credit')}>
+            Pay with Credit Card
+          </button>
+          <button className="payment-btn paypal-btn" onClick={() => setShowPayment('paypal')}>
+            Pay with PayPal
+          </button>
+          <button className="payment-btn sepa-btn" onClick={() => setShowPayment('sepa')}>
+            Pay with SEPA
+          </button>
         </div>
-        <button className="checkout-button">
-          Proceed to Checkout
-        </button>
+        {showPayment && (
+          <div className="payment-section">
+            <Payment
+              amount={getCartTotal()}
+              method={showPayment}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

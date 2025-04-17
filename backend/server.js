@@ -1,8 +1,10 @@
 // server.js
+require('dotenv').config(); 
+
 const express = require('express');
 const mongoose = require('mongoose');
 const connectDB = require('./config/mongoose');
-require('dotenv').config();
+const paymentRoutes = require('./routes/PaymentRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -22,6 +24,8 @@ const authRoutes = require('./routes/auth');
 // Routes
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/payment', paymentRoutes);
+
 
 // Cart Schema
 const cartSchema = new mongoose.Schema({
