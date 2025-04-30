@@ -4,7 +4,7 @@
   grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
   gap: 1.5rem;
   padding: 10rem 6rem;
-  margin: 30px;
+  margin: 10px;
 }
 
 .box-container .box {
@@ -40,7 +40,7 @@
 
 .box-container .box {
   position: relative;
-  background: #f3f3f3;
+  background: #f7f5f5;
   text-align: center;
   overflow: hidden;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.7);
@@ -49,7 +49,7 @@
 
 .box-container .box:hover .icons {
   top: 0;
-  color: #0b0000;
+  color: #49052c;
 }
 
 .box-container .box .icons {
@@ -105,5 +105,3 @@
   font-size: 1.7rem;
   color: var(--color);
 }
-
-

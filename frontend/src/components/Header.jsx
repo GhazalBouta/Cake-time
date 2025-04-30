@@ -16,8 +16,15 @@ const Header = () => {
   const { cart } = useContext(CartContext);
   const { wishlist } = useContext(WishlistContext);
 
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const wishlistCount = wishlist.length;
+  // Calculate cart item count with error handling
+  const cartItemCount = cart ? cart.reduce((total, item) => {
+    if (typeof item.quantity === 'number') {
+      return total + item.quantity;
+    }
+    return total;
+  }, 0) : 0;
+
+  const wishlistCount = wishlist ? wishlist.length : 0;
 
   const handleCartClick = () => {
     navigate('/Cart');
@@ -50,27 +57,41 @@ const Header = () => {
 
       <div className="icons">
         <div className="wishlist-icon-container">
-          <FontAwesomeIcon icon={faHeart} onClick={handleWishlistClick} />
-          {wishlistCount > 0 && <span className="wishlist-counter">{wishlistCount}</span>}
+          <FontAwesomeIcon 
+            icon={faHeart} 
+            className="icon"
+            onClick={handleWishlistClick}
+          />
+          {wishlistCount > 0 && (
+            <span className="icon-badge">{wishlistCount}</span>
+          )}
         </div>
-        <div className="cart-icon-container">
-          <FontAwesomeIcon icon={faShoppingCart} onClick={handleCartClick} />
-          {cartItemCount > 0 && <span className="cart-counter">{cartItemCount}</span>}
-        </div>
-        <FontAwesomeIcon icon={faUser} onClick={toggleModal} />
-      </div>
 
-      <div id="menu-btn" className="hamburger" onClick={toggleMenu}>
-        <div className="line"></div>
-        <div className="line"></div>
-        <div className="line"></div>
+        <div className="cart-icon-container">
+          <FontAwesomeIcon 
+            icon={faShoppingCart} 
+            className="icon"
+            onClick={handleCartClick}
+          />
+          {cartItemCount > 0 && (
+            <span className="icon-badge">{cartItemCount}</span>
+          )}
+        </div>
+
+        <div className="user-icon-container">
+          <FontAwesomeIcon 
+            icon={faUser} 
+            className="icon"
+            onClick={toggleModal}
+          />
+        </div>
       </div>
 
       {showModal && (
-        <Modal
-          isSignUp={isSignUp}
-          onClose={toggleModal}
+        <Modal 
+          isSignUp={isSignUp} 
           onToggle={handleToggle}
+          onClose={toggleModal}
         />
       )}
     </header>

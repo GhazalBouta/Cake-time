@@ -37,16 +37,19 @@ html {
 }
 
 .header .navbar a:hover {
-  color: #222;
+  color: #170101;
 }
 
 .header .icons {
   display: flex;
-  gap: 10px;
-  font-size: 24px;
-  color: #333;
+  gap: 1px;
+  font-size: 18px;
+  color:rgb(56, 2, 51);
   cursor: pointer;
 }
+
+
+
 
 .header .hamburger {
   display: none;

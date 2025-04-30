@@ -1,13 +1,18 @@
-import { createContext, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import { CartContext } from '../Context/CartContext';
+import '../CSS/Payment.css';
 
-const UserContext = createContext();
+const Payment = () => {
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [succeeded, setSucceeded] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const stripe = useStripe();
+  const elements = useElements();
+  const { cart, clearCart } = useContext(CartContext);
 
-export const UserContextProvider = ({ children }) => {
-  const [userState, setUserState] = useState({});
 
-  return (
-    <UserContext.Provider value={{ userState, setUserState }}>
-      {children}
-    </UserContext.Provider>
-  );
+
+    // ... rest of the component code ...
 };

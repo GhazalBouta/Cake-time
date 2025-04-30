@@ -1,11 +1,12 @@
 // server.js
-require('dotenv').config(); 
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
 const connectDB = require('./config/mongoose');
 const paymentRoutes = require('./routes/PaymentRoutes');
 const cors = require('cors');
+const path = require('path'); // <-- Added for static file serving
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -13,6 +14,9 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static images from the "images" directory
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Connect to MongoDB
 connectDB();
@@ -25,7 +29,6 @@ const authRoutes = require('./routes/auth');
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payment', paymentRoutes);
-
 
 // Cart Schema
 const cartSchema = new mongoose.Schema({

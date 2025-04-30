@@ -8,7 +8,13 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
       const savedCart = localStorage.getItem('cart');
-      return savedCart ? JSON.parse(savedCart) : [];
+      const parsedCart = savedCart ? JSON.parse(savedCart) : [];
+      
+      // Validate cart items
+      if (Array.isArray(parsedCart)) {
+        return parsedCart;
+      }
+      return [];
     } catch (error) {
       console.error('Error loading cart:', error);
       return [];
@@ -18,7 +24,9 @@ export const CartProvider = ({ children }) => {
   // Persist cart to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('cart', JSON.stringify(cart));
+      if (Array.isArray(cart)) {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      }
     } catch (error) {
       console.error('Error saving cart:', error);
     }
@@ -26,6 +34,11 @@ export const CartProvider = ({ children }) => {
 
   // Add item to cart
   const addToCart = (item) => {
+    if (!item || !item.id) {
+      console.error('Invalid item:', item);
+      return;
+    }
+
     setCart(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
       if (existingItem) {
@@ -42,37 +55,40 @@ export const CartProvider = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = (itemId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== itemId));
+    if (!itemId) return;
+
+    setCart(prevCart => {
+      const updatedCart = prevCart.filter(item => item.id !== itemId);
+      return updatedCart;
+    });
   };
 
   // Update item quantity
   const updateQuantity = (itemId, quantity) => {
-    setCart(prevCart =>
-      prevCart.map(item =>
-        item.id === itemId ? { ...item, quantity } : item
-      )
-    );
+    if (!itemId || typeof quantity !== 'number' || quantity < 0) return;
+
+    setCart(prevCart => {
+      return prevCart.map(item =>
+        item.id === itemId
+          ? { ...item, quantity: Math.max(0, quantity) }
+          : item
+      );
+    });
   };
 
   // Clear cart
-  const clearCart = () => setCart([]);
-
-  // Calculate total amount
-  const getCartTotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const clearCart = () => {
+    setCart([]);
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        getCartTotal
-      }}
-    >
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart
+    }}>
       {children}
     </CartContext.Provider>
   );

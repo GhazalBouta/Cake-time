@@ -1,161 +1,210 @@
-import React, { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements, IbanElement } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import { CartContext } from '../Context/CartContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import '../CSS/Payment.css';
 
-// Replace with your real Stripe publishable key!
-const stripePromise = loadStripe('pk_test_51RDtoIQcIUXGwTKYMS1B1ecqb7XGHgDliRiBRUXLtKGYnVHQ0S3ihl1E6huxS1MzXimUjPMsf3MQXx6rBSaE3GpW00CxHTL1gb');
-
-// Custom style for Stripe Elements
-const stripeInputStyle = {
-  style: {
-    base: {
-      fontSize: '1.1rem',
-      color: '#222',
-      fontFamily: 'inherit',
-      '::placeholder': { color: '#888' },
-      backgroundColor: '#f4f6fa',
-      padding: '12px 16px',
-      borderRadius: '6px',
-      border: '1px solid #ddd',
-    },
-    invalid: {
-      color: '#d32f2f',
-    },
-  },
-};
-
-// Credit Card Payment (Stripe)
-const StripeCheckoutForm = ({ amount }) => {
+const Payment = () => {
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [succeeded, setSucceeded] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState('card');
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = useState('');
+  const { cart, clearCart } = useContext(CartContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { shippingInfo } = location.state || {};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const cardElement = elements.getElement(CardElement);
-    const { token, error } = await stripe.createToken(cardElement);
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-    try {
-      const res = await axios.post('/api/payment/stripe', { amount, token });
-      if (res.data.success) setMessage('Payment successful!');
-      else setMessage('Payment failed.');
-    } catch (err) {
-      setMessage('Payment error: ' + (err.response?.data?.error || err.message));
-    }
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="payment-form">
-      <h3 className="payment-title">Credit Card</h3>
-      <CardElement options={stripeInputStyle} className="stripe-element" />
-      <button type="submit" className="payment-btn credit-btn" disabled={!stripe}>
-        Pay with Credit Card
-      </button>
-      <div className="payment-message">{message}</div>
-    </form>
-  );
-};
+  useEffect(() => {
+    const checkDisabled = () => {
+      if (!stripe) {
+        return;
+      }
+      setDisabled(false);
+    };
+    checkDisabled();
+  }, [stripe]);
 
-// PayPal Payment
-const PayPalButton = ({ amount }) => {
-  const [message, setMessage] = useState('');
-  const handlePayPal = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+
     try {
-      const res = await axios.post('/api/payment/paypal', { amount });
-      if (res.data.approval_url) {
-        window.location.href = res.data.approval_url;
+      let result;
+      
+      if (paymentMethod === 'card') {
+        result = await stripe.createPaymentMethod({
+          type: 'card',
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: shippingInfo.name,
+            email: shippingInfo.email
+          }
+        });
+      } else if (paymentMethod === 'paypal') {
+        result = {
+          error: null,
+          paymentMethod: {
+            id: 'simulated-paypal-payment'
+          }
+        };
+      }
+
+      if (result.error) {
+        setError(result.error.message);
+        setProcessing(false);
       } else {
-        setMessage('PayPal error: No approval URL returned.');
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+        clearCart();
+        
+        // Simulate payment processing
+        setTimeout(() => {
+          navigate('/order-confirmation', {
+            state: {
+              total: calculateTotal(),
+              paymentMethod: paymentMethod === 'card' ? 'Credit Card' : 'PayPal',
+              shippingInfo
+            }
+          });
+        }, 2000);
       }
     } catch (err) {
-      setMessage('PayPal error: ' + (err.response?.data?.error || err.message));
+      setError(err.message);
+      setProcessing(false);
     }
   };
+
+  const createOrder = (data, actions) => {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: calculateTotal().toFixed(2)
+        }
+      }]
+    });
+  };
+
+  const onApprove = (data, actions) => {
+    return actions.order.capture().then((details) => {
+      clearCart();
+      navigate('/order-confirmation', {
+        state: {
+          total: calculateTotal(),
+          paymentMethod: 'PayPal',
+          shippingInfo
+        }
+      });
+    });
+  };
+
   return (
-    <div className="payment-form">
-      <h3 className="payment-title">PayPal</h3>
-      <button className="payment-btn paypal-btn" onClick={handlePayPal}>
-        Pay with PayPal
-      </button>
-      <div className="payment-message">{message}</div>
+    <div className="payment-container">
+      <h2>Payment Details</h2>
+      
+      <div className="payment-info">
+        <div className="shipping-info">
+          <h3>Shipping Information</h3>
+          <p><strong>Name:</strong> {shippingInfo.name}</p>
+          <p><strong>Email:</strong> {shippingInfo.email}</p>
+          <p><strong>Address:</strong> {shippingInfo.address}</p>
+          <p><strong>City:</strong> {shippingInfo.city}</p>
+          <p><strong>Postal Code:</strong> {shippingInfo.postalCode}</p>
+          <p><strong>Country:</strong> {shippingInfo.country}</p>
+        </div>
+
+        <div className="order-summary">
+          <h3>Order Summary</h3>
+          <div className="summary-items">
+            {cart.map(item => (
+              <div key={item.id} className="summary-item">
+                <span>{item.title} x {item.quantity}</span>
+                <span>€{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="summary-total">
+            <span>Total:</span>
+            <span>€{calculateTotal().toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="payment-methods">
+          <label>
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="card" 
+              checked={paymentMethod === 'card'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            Credit/Debit Card
+          </label>
+          
+          <label>
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="paypal" 
+              checked={paymentMethod === 'paypal'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            PayPal
+          </label>
+        </div>
+
+        {paymentMethod === 'card' && (
+          <CardElement 
+            options={{
+              style: {
+                base: {
+                  fontSize: '16px',
+                  color: '#424770',
+                  '::placeholder': {
+                    color: '#aab7c4'
+                  }
+                },
+                invalid: {
+                  color: '#9e2146'
+                }
+              }
+            }}
+          />
+        )}
+
+        {paymentMethod === 'paypal' && (
+          <PayPalScriptProvider options={{ "client-id": "YOUAaVOphjXurm1V3-ZHVujwC8wRtkhXyKFS1uuwCQUpvinZgcrj8aUUdZ4w3AFxPOfpyMd6LLGSA08Q0Iz" }}>
+            <PayPalButtons
+              createOrder={createOrder}
+              onApprove={onApprove}
+              style={{ layout: 'vertical' }}
+            />
+          </PayPalScriptProvider>
+        )}
+
+        {error && <div className="error-message">{error}</div>}
+        <button 
+          className="submit-button"
+          disabled={processing || disabled || succeeded}
+        >
+          {processing ? 'Processing...' : 'Complete Order'}
+        </button>
+      </form>
     </div>
   );
 };
-
-// SEPA Direct Debit (Stripe)
-const SepaCheckoutForm = ({ amount }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const ibanElement = elements.getElement(IbanElement);
-    const { token, error } = await stripe.createToken(ibanElement, { name });
-    if (error) {
-      setMessage(error.message);
-      return;
-    }
-    try {
-      // You would need to implement a SEPA endpoint in your backend!
-      const res = await axios.post('/api/payment/sepa', { amount, token });
-      if (res.data.success) setMessage('SEPA payment successful!');
-      else setMessage('SEPA payment failed.');
-    } catch (err) {
-      setMessage('SEPA payment error: ' + (err.response?.data?.error || err.message));
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="payment-form">
-      <h3 className="payment-title">SEPA Direct Debit</h3>
-      <input
-        type="text"
-        placeholder="Account holder name"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        required
-        className="stripe-element"
-      />
-      <IbanElement
-        options={{
-          ...stripeInputStyle,
-          supportedCountries: ['SEPA'],
-          placeholderCountry: 'DE',
-        }}
-        className="stripe-element"
-      />
-      <button type="submit" className="payment-btn sepa-btn" disabled={!stripe}>
-        Pay with SEPA
-      </button>
-      <div className="payment-message">{message}</div>
-    </form>
-  );
-};
-
-// Main Payment component
-const Payment = ({ amount, method }) => (
-  <div className="payment-container">
-    <h2 className="payment-header">Checkout</h2>
-    <hr className="payment-divider" />
-    {method === 'credit' && (
-      <Elements stripe={stripePromise}>
-        <StripeCheckoutForm amount={amount} />
-      </Elements>
-    )}
-    {method === 'paypal' && <PayPalButton amount={amount} />}
-    {method === 'sepa' && (
-      <Elements stripe={stripePromise}>
-        <SepaCheckoutForm amount={amount} />
-      </Elements>
-    )}
-  </div>
-);
 
 export default Payment;

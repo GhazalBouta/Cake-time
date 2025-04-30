@@ -1,83 +1,111 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../Context/CartContext';
-import Payment from './Payment';
 import '../CSS/Cart.css';
 
 const Cart = () => {
-  const { cart, getCartTotal, removeFromCart, updateQuantity } = useContext(CartContext);
-  const [showPayment, setShowPayment] = useState(false);
+  const { cart , removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
-  if (!cart || cart.length === 0) {
-    return (
-      <div className="cart-container empty-cart">
-        <h2>Your cart is empty</h2>
-        <p>Add some delicious items to your cart!</p>
-      </div>
-    );
-  }
+  const handleQuantityChange = (itemId, delta) => {
+    const item = cart.find(item => item.id === itemId);
+    if (!item) return;
+
+    const newQuantity = item.quantity + delta;
+    if (newQuantity < 1) {
+      removeFromCart(itemId);
+    } else {
+      updateQuantity(itemId, newQuantity);
+    }
+  };
+
+  const handleRemoveItem = (itemId) => {
+    removeFromCart(itemId);
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) return;
+    navigate('/checkout');
+  };
 
   return (
     <div className="cart-container">
-      <h1>Your Cart</h1>
-      <div className="cart-items">
-        {cart.map((item) => (
-          <div key={item.id} className="cart-item">
-            <div className="item-image">
-              <img src={item.imgSrc} alt={item.title} />
-            </div>
-            <div className="item-details">
-              <h3>{item.title}</h3>
-              <p className="item-price">€{item.price}</p>
-              <div className="quantity-controls">
-                <button 
-                  onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                  className="quantity-btn"
-                >
-                  -
-                </button>
-                <span className="quantity">{item.quantity}</span>
-                <button 
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="quantity-btn"
-                >
-                  +
-                </button>
-              </div>
-              <p className="item-subtotal">
-                Subtotal: €{(item.price * item.quantity).toFixed(2)}
-              </p>
-              <button 
-                className="remove-button"
-                onClick={() => removeFromCart(item.id)}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="cart-summary">
-        <h2>Total: €{getCartTotal().toFixed(2)}</h2>
-        <div className="payment-methods">
-          <button className="payment-btn credit-btn" onClick={() => setShowPayment('credit')}>
-            Pay with Credit Card
-          </button>
-          <button className="payment-btn paypal-btn" onClick={() => setShowPayment('paypal')}>
-            Pay with PayPal
-          </button>
-          <button className="payment-btn sepa-btn" onClick={() => setShowPayment('sepa')}>
-            Pay with SEPA
+      <h2>Your Cart</h2>
+
+      {cart.length === 0 ? (
+        <div className="empty-cart">
+          <p>Your cart is empty</p>
+          <button onClick={() => navigate('/shop')} className="shop-now-btn">
+            Shop Now
           </button>
         </div>
-        {showPayment && (
-          <div className="payment-section">
-            <Payment
-              amount={getCartTotal()}
-              method={showPayment}
-            />
+      ) : (
+        <>
+          <div className="cart-items">
+            {cart.map(item => (
+              <div key={item.id} className="cart-item">
+                <img src={item.imgSrc} alt={item.title} className="cart-item-image" />
+                <div className="item-details">
+                  <h3>{item.title}</h3>
+                  <div className="quantity-controls">
+                    <button 
+                      onClick={() => handleQuantityChange(item.id, -1)}
+                      className="quantity-btn"
+                    >
+                      -
+                    </button>
+                    <span className="quantity-display">{item.quantity}</span>
+                    <button 
+                      onClick={() => handleQuantityChange(item.id, 1)}
+                      className="quantity-btn"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <p className="item-price">€{(item.price * item.quantity).toFixed(2)}</p>
+                </div>
+                <button 
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="remove-btn"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+
+          <div className="cart-summary">
+            <div className="summary-item">
+              <span>Subtotal:</span>
+              <span>€{calculateTotal().toFixed(2)}</span>
+            </div>
+            <div className="summary-item">
+              <span>Shipping:</span>
+              <span>Free</span>
+            </div>
+            <div className="summary-item total">
+              <span>Total:</span>
+              <span>€{calculateTotal().toFixed(2)}</span>
+            </div>
+            <button 
+              onClick={handleCheckout} 
+              className="checkout-btn"
+            >
+              Proceed to Checkout
+            </button>
+            <button 
+              onClick={clearCart} 
+              className="clear-cart-btn"
+            >
+              Clear Cart
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

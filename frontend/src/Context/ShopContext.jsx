@@ -1,36 +1,212 @@
-// ShopContext.jsx
 import React, { createContext, useState } from 'react';
 
-const ShopContext = createContext();
+export const ShopContext = createContext();
 
-const ShopContextProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState({}); // إذا كنت تستخدم setCartItems، احتفظ به
-  const [wishlistItems, setWishlistItems] = useState([]); // تعريف wishlistItems كمصفوفة
+const products = [
+  {
+    id: 1,
+    imgSrc: "../images/IMG_2657.jpg",
+    title: "cake with roses",
+    price: 180
+  },
+  {
+    id: 2,
+    imgSrc: "../images/IMG_2089.jpg",
+    title: "heart cake",
+    price: 150
+  },
+  {
+    id: 3,
+    imgSrc: "../images/IMG_0340.jpg",
+    title: "mickimaus cake",
+    price: 200
+  },
+  {
+    id: 4,
+    imgSrc: "../images/IMG_2004.jpg",
+    title: "BMW cake",
+    price: 120
+  },
+  {
+    id: 5,
+    imgSrc: "../images/IMG_5117.jpg",
+    title: "Choco cake",
+    price: 110
+  },
+  {
+    id: 6,
+    imgSrc: "../images/IMG_5525.jpg",
+    title: "gift cake",
+    price: 95
+  },
+  {
+    id: 7,
+    imgSrc: "../images/IMG_8129.jpg",
+    title: "owl cake",
+    price: 100
+  },
+  {
+    id: 8,
+    imgSrc: "../images/IMG_8490.jpg",
+    title: "shisha cake",
+    price: 125
+  },
+  {
+    id: 9,
+    imgSrc: "../images/IMG_9046.jpg",
+    title: "gift box cake",
+    price: 90
+  },
+  {
+    id: 10,
+    imgSrc: "../images/IMG_8242.jpg",
+    title: "hallo kitty cake",
+    price: 130
+  },
+  {
+    id: 11,
+    imgSrc: "../images/IMG_9481.jpg",
+    title: "farm cake",
+    price: 195
+  },
+  {
+    id: 12,
+    imgSrc: "../images/IMG_9624.jpg",
+    title: "money cake",
+    price: 170
+  },
+  {
+    id: 13,
+    imgSrc: "../images/IMG_9791.jpg",
+    title: "sun cake",
+    price: 130
+  },
+  {
+    id: 14,
+    imgSrc: "../images/IMG_9830.jpg",
+    title: "planes cake",
+    price: 200
+  },
+  {
+    id: 15,
+    imgSrc: "../images/IMG_9823.jpg",
+    title: "cup cake",
+    price: 15
+  },
+  {
+    id: 16,
+    imgSrc: "../images/IMG_4918.jpg",
+    title: "flowers cake",
+    price: 150
+  },
+  {
+    id: 17,
+    imgSrc: "../images/IMG_4554.jpg",
+    title: "school cake",
+    price: 75
+  },
+  {
+    id: 18,
+    imgSrc: "../images/IMG_2751.jpg",
+    title: "pubg cake",
+    price: 100
+  },
+  {
+    id: 19,
+    imgSrc: "../images/IMG_0697.jpg",
+    title: "Dentist cake",
+    price: 150
+  },
+  {
+    id: 20,
+    imgSrc: "../images/IMG_0001.jpg",
+    title: "makeup cake",
+    price: 180
+  },
+  {
+    id: 21,
+    imgSrc: "../images/IMG_0247.jpg",
+    title: "cake nr 1",
+    price: 130
+  },
+  {
+    id: 22,
+    imgSrc: "../images/IMG_3119.jpg",
+    title: "player cake",
+    price: 150
+  },
+  {
+    id: 23,
+    imgSrc: "../images/IMG_9355.jpg",
+    title: "princess cake",
+    price: 250
+  },
+  {
+    id: 24,
+    imgSrc: "../images/IMG_0227.jpg",
+    title: "cake pops",
+    price: 13
+  },
+  {
+    id: 25,
+    imgSrc: "../images/IMG_0902.jpg",
+    title: "simple cake",
+    price: 90
+  }
+];
 
-  const addToCart = (item) => {
-    setCartItems((prevCartItems) => ({
-      ...prevCartItems,
-      [item.id]: (prevCartItems[item.id] || 0) + 1,
-    }));
-  };
+export const ShopContextProvider = ({ children }) => {
+  const [cartItems, setCartItems] = useState({});
+  const [wishlistItems, setWishlistItems] = useState([]);
 
-  const removeFromCart = (id) => {
-    setCartItems((prevCartItems) => {
-      const newCartItems = { ...prevCartItems };
-      delete newCartItems[id];
-      return newCartItems;
+  const addToCart = (product) => {
+    setCartItems(prev => {
+      const prevQty = prev[product.id] || 0;
+      return { ...prev, [product.id]: prevQty + 1 };
     });
   };
 
-  const addToWishlist = (item) => {
-    setWishlistItems((prevItems) => [...prevItems, item]);
+  const removeFromCart = (id) => {
+    setCartItems(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
+
+  const addToWishlist = (product) => {
+    setWishlistItems(prev => [...prev, product]);
+  };
+
+  const getTotalCartAmount = () => {
+    return Object.entries(cartItems).reduce((sum, [id, qty]) => {
+      const product = products.find(p => p.id === parseInt(id));
+      return product ? sum + product.price * qty : sum;
+    }, 0);
+  };
+
+  const getCartItems = () => {
+    return Object.entries(cartItems).map(([id, qty]) => {
+      const product = products.find(p => p.id === parseInt(id));
+      return {
+        ...product,
+        quantity: qty
+      };
+    }).filter(item => item !== undefined);
   };
 
   return (
-    <ShopContext.Provider value={{ cartItems, addToCart, removeFromCart, wishlistItems, addToWishlist }}>
+    <ShopContext.Provider value={{
+      products,
+      cartItems,
+      getCartItems,
+      addToCart,
+      removeFromCart,
+      getTotalCartAmount,
+      wishlistItems,
+      addToWishlist
+    }}>
       {children}
     </ShopContext.Provider>
   );
 };
-
-export { ShopContext, ShopContextProvider };

@@ -6,8 +6,7 @@ const About = () => {
   return (
     <section className="about" id="about">
       <div className="img">
-      <img src={`${process.env.PUBLIC_URL}/images/cake logo.ico`} alt="cake logo" />
-      </div>
+	  <img src="/images/cake logo.png" alt="cake logo" />      </div>
       <div className="home">
         <h3>❣️made with love and passion♥️</h3>
         <p>Welcome to world, where every confection tells
