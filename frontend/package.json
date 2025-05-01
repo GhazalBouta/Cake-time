@@ -22,11 +22,10 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.2",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "stripe": "^18.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

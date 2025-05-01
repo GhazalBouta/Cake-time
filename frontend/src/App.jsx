@@ -10,6 +10,7 @@ import Cart                    from './components/Cart';
 import CheckoutPage            from './components/CheckoutPage';
 import Payment                from './components/Payment';
 import OrderConfirmation        from './components/OrderConfirmation';
+import OrderViewer              from './components/OrderViewer';
 
 import SignUp                  from './components/SignUp';
 import SignIn                  from './components/SignIn';
@@ -40,7 +41,7 @@ function App() {
             <Route path="/checkout"        element={<CheckoutPage />} />
             <Route path="/payment" element={<Elements stripe={stripePromise}><Payment /></Elements>} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
-
+            <Route path="/orders" element={<OrderViewer />} />
            
           </Routes>
           <Footer />

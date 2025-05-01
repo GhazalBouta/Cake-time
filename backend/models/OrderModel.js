@@ -1,19 +1,36 @@
+// backend/models/Order.js
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  items: [{
-    id: String,
-    quantity: Number
-  }],
-  amount: Number,
-  paymentId: String,
-  paymentMethod: { type: String, default: 'card' },
-  shippingInfo: {
-    name: String,
-    address: String,
-    email: String
+  customerName: {
+    type: String,
+    required: true
   },
-  createdAt: { type: Date, default: Date.now }
+  email: {
+    type: String,
+    required: true
+  },
+  totalAmount: {
+    type: Number,
+    required: true
+  },
+  paymentMethod: {
+    type: String,
+    required: true
+  },
+  items: [{
+    name: String,
+    quantity: Number,
+    price: Number
+  }],
+  status: {
+    type: String,
+    default: 'Pending'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -12,7 +12,6 @@ const Header = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
   const { cart } = useContext(CartContext);
   const { wishlist } = useContext(WishlistContext);
 
@@ -42,14 +41,10 @@ const Header = () => {
     setIsSignUp(!isSignUp);
   };
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
   return (
     <header className="header">
       <a href="/about" className="logo">Cake Time</a>
-      <nav className={`navbar ${menuOpen ? 'active' : ''}`}>
+      <nav className="navbar">
         <Link to="/about">About</Link>
         <Link to="/shop">Shop</Link>
         <Link to="/feedback">Feedback</Link>

@@ -1,0 +1,41 @@
+/* frontend/src/CSS/OrderViewer.css */
+.order-viewer {
+    max-width: 1200px;
+    margin: 10rem auto;
+    padding: 10rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .order-viewer h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  .order-viewer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .order-viewer th,
+  .order-viewer td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .order-viewer th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .order-viewer tr:hover {
+    background: #f8f9fa;
+  }
+  
+  .order-viewer td:last-child {
+    white-space: nowrap;
+  }

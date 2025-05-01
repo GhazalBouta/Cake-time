@@ -1,97 +1,51 @@
-// server.js
+// backend/server.js
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
-const connectDB = require('./config/mongoose');
-const paymentRoutes = require('./routes/PaymentRoutes');
 const cors = require('cors');
-const path = require('path'); // <-- Added for static file serving
-
+const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve static images from the "images" directory
-app.use('/images', express.static(path.join(__dirname, 'images')));
+// Serve static files from frontend public folder
+app.use(express.static(path.join(__dirname, '../frontend/public')));
 
-// Connect to MongoDB
-connectDB();
-
-// Import routes
-const feedbackRoutes = require('./routes/feedback');
-const authRoutes = require('./routes/auth');
+// MongoDB connection
+const MONGODB_URI = 'mongodb://localhost:27017/cake-time';
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/feedback', feedbackRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/payment', paymentRoutes);
+app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/feedback', require('./routes/feedback'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/payment', require('./routes/PaymentRoutes'));
 
-// Cart Schema
-const cartSchema = new mongoose.Schema({
-    items: [
-        {
-            id: { type: String, required: true },
-            title: { type: String, required: true },
-            price: { type: Number, required: true },
-            quantity: { type: Number, default: 1 },
-        }
-    ]
-});
-
-const Cart = mongoose.model('Cart', cartSchema);
-
-// Cart routes
-app.post('/api/cart', async (req, res) => {
-    const { id, title, price } = req.body;
-    let cart = await Cart.findOne();
-
-    if (!cart) {
-        cart = new Cart({
-            items: [{ id, title, price, quantity: 1 }]
-        });
-    } else {
-        const existingItem = cart.items.find(item => item.id === id);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.items.push({ id, title, price, quantity: 1 });
-        }
-    }
-
-    await cart.save();
-    res.json(cart);
-});
-
-app.get('/api/cart', async (req, res) => {
-    const cart = await Cart.findOne();
-    if (cart) {
-        res.json(cart);
-    } else {
-        res.status(404).json({ message: "Cart not found" });
-    }
-});
-
-app.put('/api/cart/:id', async (req, res) => {
-    const { id } = req.params;
-    const { quantity } = req.body;
-    const cart = await Cart.findOne();
-
-    if (cart) {
-        const item = cart.items.find(item => item.id === id);
-        if (item) {
-            item.quantity = quantity;
-            await cart.save();
-        }
-    }
-
-    res.json(cart);
+// Cart route
+app.get('/api/cart', (req, res) => {
+  res.json({ message: 'Cart endpoint' });
 });
 
 // Start the server
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+
+const https = require('https');
+const fs = require('fs');
+
+// Load SSL certificates
+const options = {
+  key: fs.readFileSync('path/to/private-key.pem'),
+  cert: fs.readFileSync('path/to/certificate.pem')
+};
+
+// Create HTTPS server
+const server = https.createServer(options, app);

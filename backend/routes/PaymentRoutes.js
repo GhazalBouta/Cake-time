@@ -1,38 +1,56 @@
+// backend/routes/PaymentRoutes.js
 const express = require('express');
 const router = express.Router();
-const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-const Order = require('../models/OrderModel');
+require('dotenv').config(); // Add this line to load environment variables
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// Create PaymentIntent for Stripe Elements
+// Create payment intent
 router.post('/create-payment-intent', async (req, res) => {
-  const { amount } = req.body;
+  const { amount, currency } = req.body;
+
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency: 'usd',
+      amount: amount * 100, // Convert to cents
+      currency: currency || 'usd',
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
+
     res.json({ clientSecret: paymentIntent.client_secret });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Stripe error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
-// Save order after payment
-router.post('/save-order', async (req, res) => {
-  const { cartItems, amount, paymentId, shippingInfo, paymentMethod } = req.body;
+// Handle successful payment
+router.post('/payment-success', async (req, res) => {
+  const { paymentIntentId, orderData } = req.body;
+
   try {
-    const order = new Order({
-      items: cartItems,
-      amount,
-      paymentId,
-      paymentMethod: paymentMethod || 'card',
-      shippingInfo
-    });
-    await order.save();
-    res.json({ success: true, order });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    // Verify payment
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status === 'succeeded') {
+      // Create order in database
+      const order = new Order({
+        customerName: orderData.customerName,
+        email: orderData.email,
+        totalAmount: paymentIntent.amount / 100, // Convert back to dollars
+        paymentMethod: 'Credit Card',
+        items: orderData.items,
+        status: 'Completed'
+      });
+
+      await order.save();
+      res.json({ success: true, orderId: order._id });
+    } else {
+      res.status(400).json({ error: 'Payment not successful' });
+    }
+  } catch (error) {
+    console.error('Payment error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 

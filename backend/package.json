@@ -20,7 +20,7 @@
     "mongoose": "^8.9.1",
     "paypal-rest-sdk": "^1.8.1",
     "some-module": "^0.0.3",
-    "stripe": "^18.0.0"
+    "stripe": "^18.1.0"
   },
   "proxy": "http://localhost:4000"
 }

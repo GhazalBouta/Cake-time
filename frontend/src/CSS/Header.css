@@ -42,7 +42,7 @@ html {
 
 .header .icons {
   display: flex;
-  gap: 1px;
+  gap: 5px;
   font-size: 18px;
   color:rgb(56, 2, 51);
   cursor: pointer;
