@@ -1,10 +1,12 @@
-// In your cart routes file (routes.js)
-const { Router } = require('express');
-const cartController = require('../controllers/cartControllers');
-const router = Router();
+// backend/routes/cartRoutes.js
+const express = require('express');
+const router = express.Router();
+const CartController = require('../controllers/CartController');
 
-router.get('/cart/:id', cartController.get_cart_items);
-router.post('/cart/:id', cartController.add_cart_item);
-router.delete('/cart/:userId/:itemId', cartController.delete_item);
+// Cart routes
+router.get('/:userId', CartController.get_cart_items);
+router.post('/:userId/items', CartController.add_cart_item);
+router.delete('/:userId/items/:itemId', CartController.delete_item);
+
 
 module.exports = router;

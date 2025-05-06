@@ -4,7 +4,7 @@ import { CartContext } from '../Context/CartContext';
 import '../CSS/Cart.css';
 
 const Cart = () => {
-  const { cart , removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+  const { cart, removeFromCart, updateQuantity, clearCart, loading, error } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleQuantityChange = (itemId, delta) => {
@@ -31,6 +31,27 @@ const Cart = () => {
     if (cart.length === 0) return;
     navigate('/checkout');
   };
+
+  if (loading) {
+    return (
+      <div className="cart-container">
+        <h2>Your Cart</h2>
+        <div className="loading">Loading cart...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="cart-container">
+        <h2>Your Cart</h2>
+        <div className="error">Error: {error}</div>
+        <button onClick={() => window.location.reload()} className="retry-btn">
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="cart-container">

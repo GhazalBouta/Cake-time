@@ -1,7 +1,7 @@
-// src/components/SignUp.jsx
+// frontend/src/components/SignUp.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { signup } from '../api/auth';
 import '../CSS/Auth.css';
 
 const SignUp = () => {
@@ -25,57 +25,24 @@ const SignUp = () => {
     setError(null);
   };
 
-  const validateForm = () => {
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('All fields are required');
-      return false;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await axios.post('http://localhost:4000/api/auth/signup', {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password
-      });
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords don't match");
+      setLoading(false);
+      return;
+    }
 
-      if (response.status === 201) {
-        const { token } = response.data;
-        localStorage.setItem('token', token);
-        setSuccess(true);
-        
-        setTimeout(() => {
-          navigate('/signin');
-        }, 2000);
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error signing up. Please try again.');
+    try {
+      const { confirmPassword, ...userData } = formData;
+      await signup(userData);
+      setSuccess(true);
+      setTimeout(() => navigate('/signin'), 2000);
+    } catch (error) {
+      setError(error.response?.data?.message || 'Sign up failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -83,76 +50,76 @@ const SignUp = () => {
 
   return (
     <div className="auth-container">
-      <form onSubmit={handleSubmit} className="auth-form">
-        <h2>Create Account</h2>
-        
+      <div className="auth-form">
+        <h2>Sign Up</h2>
         {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">Successfully registered! Redirecting to login...</div>}
+        {success && (
+          <div className="success-message">
+            Account created successfully! Redirecting to sign in...
+          </div>
+        )}
         
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Enter your username"
-            disabled={loading}
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              minLength="3"
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            disabled={loading}
-          />
-        </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            disabled={loading}
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength="6"
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Confirm your password"
-            disabled={loading}
-          />
-        </div>
+          <div className="form-group">
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              minLength="6"
+            />
+          </div>
 
-        <button 
-          type="submit" 
-          className={`auth-button ${loading ? 'loading' : ''}`}
-          disabled={loading}
-        >
-          {loading ? 'Signing up...' : 'Sign Up'}
-        </button>
+          <button 
+            type="submit" 
+            className="submit-btn" 
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </button>
+        </form>
 
         <p className="auth-link">
           Already have an account? <a href="/signin">Sign In</a>
         </p>
-      </form>
+      </div>
     </div>
   );
 };
